@@ -33,7 +33,7 @@
 
 ### Установка
 
-1. Убедитесь, что у вас установлен [uv](https://docs.astral.sh/uv/getting-started/installation/). Если нет, скачайте и установите его
+1. Убедитесь, что у вас установлен uv. Если нет, [скачайте и установите](https://docs.astral.sh/uv/getting-started/installation/) его
 
     Проверка, что `uv` установлен:
    ```bash
