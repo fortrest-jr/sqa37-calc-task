@@ -31,25 +31,33 @@
 
 ## Установка и запуск
 
-### Установка зависимостей
-```bash
-pip install -r requirements.txt
-```
+### Установка
+
+1. Убедитесь, что у вас установлен [uv](https://docs.astral.sh/uv/getting-started/installation/). Если нет, скачайте и установите его
+
+    Проверка, что `uv` установлен:
+   ```bash
+   uv --version
+   ```
+
+2. Установите Python и зависимости проекта через `uv`:
+   ```bash
+   uv python install
+   uv pip install -r requirements.txt
+   ```
 
 ### Запуск веб-приложения
+
+Запустите приложение с помощью `uv`:
 ```bash
-python app.py
+uv run python app.py
 ```
 
 Приложение будет доступно по адресу: http://localhost:5000
 
 ### Запуск тестов
 ```bash
-# Тесты для основной логики
-python -m unittest test_calculator.py
-
-# Тесты для API
-pytest test_api.py -v
+uv run pytest
 ```
 
 ## API Endpoints
