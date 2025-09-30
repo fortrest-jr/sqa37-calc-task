@@ -40,6 +40,12 @@ class CalculatorClient:
         response = requests.post(f"{self.base_url}/api/divide", json=data)
         return response.json()
 
+    def round_number(self, value, precision, method="auto"):
+        """Округление числа."""
+        data = {"value": value, "precision": precision, "method": method}
+        response = requests.post(f"{self.base_url}/api/round", json=data)
+        return response.json()
+
     def calculate(self, operation, a, b):
         """Универсальный метод для вычислений."""
         data = {"operation": operation, "a": a, "b": b}
@@ -88,9 +94,29 @@ def demo():
     result = client.divide(15, 3)
     print(f"   15 / 3 = {result['result']}")
 
+    # Округление чисел (неоднозначная логика!)
+    print("\n   === НЕОДНОЗНАЧНАЯ ЛОГИКА ОКРУГЛЕНИЯ ===")
+    result = client.round_number(3.14159, 2, "auto")
+    print(f"   round(3.14159, 2, auto) = {result['result']}")
+
+    result = client.round_number(3.14159, 2, "up")
+    print(f"   round(3.14159, 2, up) = {result['result']}")
+
+    result = client.round_number(3.14159, 2, "down")
+    print(f"   round(3.14159, 2, down) = {result['result']}")
+
+    result = client.round_number(1234, -2, "auto")
+    print(f"   round(1234, -2, auto) = {result['result']} (округление до разрядов)")
+
+    result = client.round_number(0, 2, "auto")
+    print(f"   round(0, 2, auto) = {result['result']} (особый случай)")
+
     # Универсальный endpoint
     result = client.calculate("add", 2, 8)
-    print(f"   Универсальный: 2 + 8 = {result['result']}\n")
+    print(f"   Универсальный: 2 + 8 = {result['result']}")
+
+    result = client.calculate("round", 3.14, 1)
+    print(f"   Универсальный: round(3.14, 1) = {result['result']}\n")
 
     # Просмотр истории
     print("3. История вычислений:")
