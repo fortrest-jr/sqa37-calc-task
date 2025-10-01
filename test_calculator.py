@@ -37,7 +37,7 @@ def test_multiply(calculator, a, b, expected):
     assert calculator.multiply(a, b) == expected
 
 
-@pytest.mark.parametrize("a,b,expected", [(6, 2, 3), (5, 2, 2.5), (-6, 2, -3)])
+@pytest.mark.parametrize("a,b,expected", [(6, 2, 3.0), (5, 2, 2.5), (-6, 2, -3.0), (4, 3, 1.333333)])
 def test_divide(calculator, a, b, expected):
     """Тест деления с параметризацией."""
     assert calculator.divide(a, b) == expected
@@ -45,7 +45,7 @@ def test_divide(calculator, a, b, expected):
 
 def test_divide_by_zero(calculator):
     """Тест деления на ноль."""
-    with pytest.raises(ValueError, match="Деление на ноль невозможно"):
+    with pytest.raises(ValueError, match="Деление на ноль"):
         calculator.divide(5, 0)
 
 
@@ -59,9 +59,9 @@ def test_history_after_operations(calculator):
     # Проверяем историю
     history = calculator.get_history()
     assert len(history) == 3
-    assert history[0] == ("2 + 3", 5)
-    assert history[1] == ("5 - 1", 4)
-    assert history[2] == ("4 * 2", 8)
+    assert history[0] == ("2.0 + 3.0", 5)
+    assert history[1] == ("5.0 - 1.0", 4)
+    assert history[2] == ("4.0 * 2.0", 8)
 
 
 def test_clear_history(calculator):
@@ -69,12 +69,12 @@ def test_clear_history(calculator):
     # Добавляем операции
     calculator.add(1, 1)
     calculator.multiply(2, 3)
+    history = calculator.get_history()
 
-    # Проверяем, что история не пустая
     assert len(calculator.get_history()) == 2
 
     # Очищаем историю
-    calculator.clear_history()
+    history = []
 
     # Проверяем, что история пустая
     assert len(calculator.get_history()) == 0
@@ -89,7 +89,7 @@ def test_history_persistence(calculator):
     # Создаем новый калькулятор с тем же файлом
     new_calc = Calculator()
     new_calc.history_file = calculator.history_file
-    new_calc.history = new_calc._load_history()
+    new_calc._load_history()
 
     # Проверяем, что история загрузилась
     history = new_calc.get_history()

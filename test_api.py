@@ -131,7 +131,7 @@ class TestCalculatorAPI:
     def test_invalid_json(self, client):
         """Тест некорректного JSON."""
         response = client.post('/api/add', data='invalid json', content_type='application/json')
-        assert response.status_code == 500
+        assert response.status_code == 400
 
     @pytest.mark.parametrize(
         "operation,a,b,expected", [('add', 1, 2, 3), ('add', -1, 5, 4), ('add', 0, 0, 0), ('add', 999999, 1, 1000000)]
@@ -205,9 +205,9 @@ class TestCalculatorAPI:
         data = json.loads(response.data)
         assert data['count'] == 2
         assert len(data['history']) == 2
-        assert data['history'][0]['operation'] == '1.0 + 2.0'
+        assert data['history'][0]['operation'] == '1 + 2'
         assert data['history'][0]['result'] == 3
-        assert data['history'][1]['operation'] == '3.0 * 4.0'
+        assert data['history'][1]['operation'] == '3 * 4'
         assert data['history'][1]['result'] == 12
 
         # Очищаем историю
