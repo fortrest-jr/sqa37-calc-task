@@ -53,7 +53,7 @@
 uv run python app.py
 ```
 
-Приложение будет доступно по адресу: http://localhost:5000
+Приложение будет доступно по адресу: http://localhost:8000
 
 ### Запуск тестов
 ```bash
@@ -80,19 +80,19 @@ uv run pytest
 
 #### Сложение
 ```bash
-curl -X POST http://localhost:5000/api/add \
+curl -X POST http://localhost:8000/api/add \
   -H "Content-Type: application/json" \
   -d '{"a": 2, "b": 3}'
 ```
 
 #### Получение истории
 ```bash
-curl http://localhost:5000/api/history
+curl http://localhost:8000/api/history
 ```
 
 #### Универсальный endpoint
 ```bash
-curl -X POST http://localhost:5000/api/calculate \
+curl -X POST http://localhost:8000/api/calculate \
   -H "Content-Type: application/json" \
   -d '{"operation": "multiply", "a": 4, "b": 5}'
 ```
