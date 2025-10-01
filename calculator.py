@@ -9,29 +9,29 @@ import os
 
 class Calculator:
     """Калькулятор с базовыми математическими операциями."""
-    
+
     def __init__(self):
         self.history_file = "calculator_history.json"
         self.history = self._load_history()
-    
+
     def add(self, a: float, b: float) -> float:
         """Сложение двух чисел."""
         result = a + b
         self._add_to_history(f"{a} + {b}", result)
         return result
-    
+
     def subtract(self, a: float, b: float) -> float:
         """Вычитание двух чисел."""
         result = a - b
         self._add_to_history(f"{a} - {b}", result)
         return result
-    
+
     def multiply(self, a: float, b: float) -> float:
         """Умножение двух чисел."""
         result = a * b
         self._add_to_history(f"{a} * {b}", result)
         return result
-    
+
     def divide(self, a: float, b: float) -> float:
         """Деление двух чисел."""
         if b == 0:
@@ -39,21 +39,21 @@ class Calculator:
         result = a / b
         self._add_to_history(f"{a} / {b}", result)
         return result
-    
+
     def get_history(self) -> List[Tuple[str, float]]:
         """Получить историю вычислений."""
         return self.history.copy()
-    
+
     def clear_history(self) -> None:
         """Очистить историю вычислений."""
         self.history = []
         self._save_history()
-    
+
     def _add_to_history(self, operation: str, result: float) -> None:
         """Добавить операцию в историю."""
         self.history.append((operation, result))
         self._save_history()
-    
+
     def _load_history(self) -> List[Tuple[str, float]]:
         """Загрузить историю из файла."""
         if os.path.exists(self.history_file):
@@ -64,7 +64,7 @@ class Calculator:
             except (json.JSONDecodeError, KeyError):
                 return []
         return []
-    
+
     def _save_history(self) -> None:
         """Сохранить историю в файл."""
         data = [{'operation': op, 'result': res} for op, res in self.history]
