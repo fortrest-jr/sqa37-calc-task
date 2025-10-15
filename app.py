@@ -93,6 +93,34 @@ def divide():
         return jsonify({'error': f'Внутренняя ошибка: {str(e)}'}), 500
 
 
+@app.route('/api/round', methods=['POST'])
+def round_number():
+    """API endpoint для округления чисел."""
+    try:
+        data = request.get_json()
+        if not data or 'value' not in data or 'precision' not in data:
+            return jsonify({'error': 'Требуются параметры value и precision'}), 400
+
+        value = float(data['value'])
+        precision = float(data['precision'])
+        method = data.get('method', 'auto')
+
+        # Валидация метода
+        valid_methods = ['auto', 'up', 'down', 'banker', 'truncate']
+        if method not in valid_methods:
+            return jsonify({'error': f'Неподдерживаемый метод. Доступны: {", ".join(valid_methods)}'}), 400
+
+        result = calculator.round_number(value, precision, method)
+
+        return jsonify(
+            {'operation': 'round', 'value': value, 'precision': precision, 'method': method, 'result': result}
+        )
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': f'Внутренняя ошибка: {str(e)}'}), 500
+
+
 @app.route('/api/history', methods=['GET'])
 def get_history():
     """API endpoint для получения истории вычислений."""
@@ -118,10 +146,30 @@ def calculate():
     """Универсальный API endpoint для всех операций."""
     try:
         data = request.get_json()
+        operation = data['operation'].lower() if data and 'operation' in data else None
+
+        # Для операции round нужны параметры value, precision и опционально method
+        if operation == 'round':
+            if not data or 'value' not in data or 'precision' not in data:
+                return jsonify({'error': 'Требуются параметры operation, value и precision'}), 400
+            value = float(data['value'])
+            precision = float(data['precision'])
+            method = data.get('method', 'auto')
+
+            # Валидация метода
+            valid_methods = ['auto', 'up', 'down', 'banker', 'truncate']
+            if method not in valid_methods:
+                return jsonify({'error': f'Неподдерживаемый метод. Доступны: {", ".join(valid_methods)}'}), 400
+
+            result = calculator.round_number(value, precision, method)
+            return jsonify(
+                {'operation': operation, 'value': value, 'precision': precision, 'method': method, 'result': result}
+            )
+
+        # Для остальных операций нужны параметры a и b
         if not data or 'operation' not in data or 'a' not in data or 'b' not in data:
             return jsonify({'error': 'Требуются параметры operation, a и b'}), 400
 
-        operation = data['operation'].lower()
         a = float(data['a'])
         b = float(data['b'])
 
@@ -134,7 +182,10 @@ def calculate():
         elif operation == 'divide':
             result = calculator.divide(a, b)
         else:
-            return jsonify({'error': 'Неподдерживаемая операция. Доступны: add, subtract, multiply, divide'}), 400
+            return (
+                jsonify({'error': 'Неподдерживаемая операция. Доступны: add, subtract, multiply, divide, round'}),
+                400,
+            )
 
         return jsonify({'operation': operation, 'a': a, 'b': b, 'result': result})
     except ValueError as e:
